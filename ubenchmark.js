@@ -65,7 +65,7 @@
 			switch ( (param = arguments[i]).constructor ) {
 				case Array : args     = param; continue;
 				case Number: duration = param; continue;
-				case String: title 	  = param; continue;
+				case String: title    = param; continue;
 			};
 
 		args 	 = args  || [];

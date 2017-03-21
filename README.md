@@ -14,7 +14,7 @@ simply JS benchmark function
 	  duration   (number) fn will be benchmarked over a period of 'duration' seconds in length
 	  title      (string) title of benchmark test, to be inserted in "results"
    
-	 NOTE: applying bind an object to a function via .bind, .call, or .apply can dramatically 
+	 NOTE: binding an object to a function via .bind, .call, or .apply can dramatically 
       affect performance of said function. Consequently, uBench does not offer to bind any object 
       to function fn.  For example, "uBench(document.querySelectorAll,['div'])" will NOT work 
       because 'querySelectorAll' is not actually bound to 'document', nor does uBench offer to 

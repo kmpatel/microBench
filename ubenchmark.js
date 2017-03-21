@@ -27,15 +27,16 @@
 	const formatNumber = function(value) {
 		value = value.toString();
 		var blocks = [];
-		do {
+		while (value) {
 			blocks.unshift(value.slice(-3));
 			value   = value.slice(0,-3);
-		} while (value);
+		};
 
 		return blocks.join(',');
 	};
 
-	const timeFn = function(_fn,_N) {
+	// measure elapsed time for executing fn(), N times
+	const timeFn = function(_fn, _N) {
 		const fn = _fn, N  = _N;  // in case JS compiler optimizes for it
 
 		const tic = new Date();
@@ -43,6 +44,7 @@
 		return new Date() - tic;
 	};
 
+	// get fast estimate of op/millisecond for fn
 	const calibrateFn = function(fn) {
 		const duration = 100;	// minimum test duration (milliseconds) to estimate op/sec
 		var N = 1, elapsed = 0;
@@ -52,7 +54,7 @@
 			elapsed = timeFn(fn,N);
 		} while ( elapsed < duration );
 
-		return Math.floor( N / elapsed );	// estimated op/millisecond over 'duration' milliseconds
+		return Math.floor( N / elapsed );	// estimated op/millisecond
 	};
 
 	const uBenchmark = function(fn, _args, _title, _duration) {
@@ -61,14 +63,14 @@
 		// parse arguments
 		for(var param, i = 1; i < arguments.length; i++) 
 			switch ( (param = arguments[i]).constructor ) {
-				case Array : args 		= param; continue;
-				case Number: duration	= param; continue;
-				case String: title 		= param; continue;
+				case Array : args     = param; continue;
+				case Number: duration = param; continue;
+				case String: title 	  = param; continue;
 			};
 
 		args 	 = args  || [];
 		title 	 = title || (fn||{}).name;
-		duration = (duration || 2) * 1000;
+		duration = (duration || 2) * 1000;	// default to 2 seconds test duration
 
 		fn = ( typeof fn === 'string' ) ? new Function(fn) : ( fn || function(){} );
 		
@@ -78,7 +80,7 @@
 		if (args.length > 0)  
 			fn = Function.bind.apply(fn, [null].concat(args));
 
-		// estimate op/sec and calculate # iteration for desired block duration
+		// estimate op/sec and calculate # iteration per block duration
 		const N = calibrateFn(fn) * block_duration;
 
 		// benchmark fn
@@ -94,6 +96,7 @@
 
 		const results = { 'op/sec': formatNumber(ops),  microseconds: uSeconds, ops:ops, fn : fnString };
 		if (title) results.title = title;
+		
 		return results;
 	}
 

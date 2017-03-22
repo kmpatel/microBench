@@ -27,9 +27,10 @@
 	const formatNumber = function(value) {
 		value = value.toString();
 		var blocks = [];
+
 		while (value) {
 			blocks.unshift(value.slice(-3));
-			value   = value.slice(0,-3);
+			value = value.slice(0,-3);
 		};
 
 		return blocks.join(',');
@@ -47,12 +48,13 @@
 	// get fast estimate of op/millisecond for fn
 	const calibrateFn = function(fn) {
 		const duration = 100;	// minimum test duration (milliseconds) to estimate op/sec
-		var N = 1, elapsed = 0;
+		var N = 1, elapsed = 0, repeat = 0;
 
 		do {	
-			N = Math.floor( N * ( elapsed ? 1.1*duration/elapsed : duration ) );
-			elapsed = timeFn(fn,N);
-		} while ( elapsed < duration );
+			N *= ( elapsed ? 1.1*duration/elapsed : duration );
+			elapsed = timeFn(fn,Math.floor(N));
+			repeat += (elapsed > duration);
+		} while ( repeat < 2);
 
 		return Math.floor( N / elapsed );	// estimated op/millisecond
 	};
@@ -68,12 +70,11 @@
 				case String: title    = param; continue;
 			};
 
-		args 	 = args  || [];
-		title 	 = title || (fn||{}).name;
+		args     = args  || [];
+		title    = title || (fn||{}).name;
 		duration = (duration || 2) * 1000;	// default to 2 seconds test duration
 
 		fn = ( typeof fn === 'string' ) ? new Function(fn) : ( fn || function(){} );
-		
 		fnString = fn.toString();
 		
 		// bind arguments
@@ -84,23 +85,26 @@
 		const N = calibrateFn(fn) * block_duration;
 
 		// benchmark fn
-		const I = Math.ceil( duration / Math.min(block_duration,duration) );
-		var   i = 0, elapsed = 0;
+		const I = Math.ceil( duration / Math.min(block_duration, duration) );
+		var   i = 0, operations = 0, elapsed = 0;
 
-		while (i++ < I)
-			elapsed += timeFn(fn,N);
+		for ( var i = 0; i < I; i++ ) {
+			operations += N;
+			elapsed    += timeFn(fn,N);
+		}
 
 		// calculate results
-		const ops = Math.round( 1000 * I * N / elapsed );
-		const uSeconds = Math.round( 1e6/ops * 10000 ) / 10000; //round to 1/10th of nanosecod
+		const ops = Math.round( operations / elapsed * 1000 );
 
-		const results = { 'op/sec': formatNumber(ops),  microseconds: uSeconds, ops:ops, fn : fnString };
+		const results = {'op/sec': formatNumber(ops), opertions: operations, elasped: elapsed / 1000 };
+
+		results.fn = fnString;
 		if (title) results.title = title;
-		
+
 		return results;
 	}
 
 	calibrateFn(function(){});	// make sure everything is loaded into memory
-	bindTo.uBench = uBenchmark;
+	Object.defineProperty(bindTo,'uBench',{value: uBenchmark, writable: false, enumerable: true});
 
 })(window);

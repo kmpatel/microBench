@@ -1,27 +1,33 @@
-<script src='./ubenchmark.js'></script>
+<script src='./ubenchmark.min.js'></script>
 
 <body>
 	<div id='a'></div>
 </body>	
 
 <script>
+	var el = a;
 	a.className = 'test run';
 
-	function matches() {
-		return a.matches('.test');
+	function fnMatches() {
+		return el.matches('.test');
 	}
 
-	// test baseline speed (no function)
-	console.log(uBench());	// use no title and default test duration
-	console.log(uBench('', 3));	// use test duration of 3s (no title)
-	console.log(uBench('', 'baseline', 1));	// use title of 'baseline' & use test duration of 1s
+	// test baseline speed ( iterate function(){} )
+	console.log( uBench()                ); // use no title and default test duration
+	console.log( uBench(null,3)          ); // use no title and 3 sec test duration
+	console.log( uBench('','baseline',3) ); // use 'baseline' as title and 3 sec test duration
 
-	// test speed of element.matches, give title of 'element.matches', use default test duration
-	console.log(uBench(matches, 'element.matches'));	
 
-	// test speed of document.querySelector, give title of 'querySelector', use  4 second test duration
-	console.log(uBench("document.querySelector('.test')", 'querySelector'));
+	// test speed of element.matches, use default test duration
+	console.log( uBench(fnMatches)             );
 
+	// test speed of element.matches with function arguments & title
+	el = Element.prototype.matches.bind(a);
+	console.log( uBench(el, ['.test'], 'Element.prototype.matches.bind(a)') );
+	console.log( uBench(el, 'Element.prototype.matches.bind(a)', ['.test']) );
+
+	// test speed of document.querySelector, title provided
+	console.log( uBench("document.querySelector('.test')", 'querySelector') );
 
 
 </script>

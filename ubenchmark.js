@@ -96,7 +96,7 @@
 		// calculate results
 		const ops = Math.round( operations / elapsed * 1000 );
 
-		const results = {'op/sec': formatNumber(ops), opertions: operations, elasped: elapsed / 1000 };
+		const results = {'op/sec': formatNumber(ops), N: operations, time: elapsed / 1000 };
 
 		results.fn = fnString;
 		if (title) results.title = title;

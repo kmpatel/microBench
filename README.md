@@ -20,18 +20,18 @@ simply JS benchmark function
       because 'querySelectorAll' is not actually bound to 'document', nor does uBench offer to 
       do it. Examples of proper methods to benchmark "querySelectorAll" are:
 
-        uBench( document.querySelectorAll.bind(document), ['div']  )
-        uBench( document.querySelectorAll.bind(document,'div')     )
         uBench( "document.querySelectorAll('div')"                 )
+        uBench( document.querySelectorAll.bind(document,'div')     )
+        uBench( document.querySelectorAll.bind(document), ['div']  )
         uBench( function(){ document.querySelectorAll('div') }     )
         uBench( function(s){document.querySelectorAll(s)}, ['div'] )
-        uBench( () => document.querySelectorAll('div')             )  // for browser with arrow-func
+        uBench( () => document.querySelectorAll('div')             )  // browser with arrow-func
         uBench( s  => document.querySelectorAll(s), ['div']        )  
 
 	output:
       results['op/sec']  calculated operations per second, formatted string
-      results['N'     ]  measured number of operations performed (fn was call)
-      results['time'  ]  measured elapsed time (sec) in performing measured number of operations
+      results['N'     ]  measured number of operations performed (number of fn calls)
+      results['time'  ]  measured elapsed time (sec) to perform N operations
       results['fn'    ]  stringified version of tested function
       results['title' ]  title provided in argument or name of function provided (if available)
 

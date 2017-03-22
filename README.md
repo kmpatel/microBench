@@ -29,9 +29,9 @@ simply JS benchmark function
         uBench( s  => document.querySelectorAll(s), ['div']        )  
 
 	output:
-      results['op/sec']       calculated operations per second, formatted string
-      results['operations']   measured number of operations performed (fn was call)
-      results['elapsed']      measured elapsed time (sec) in performing measured number of operations
-      results['fn'    ]       stringified version of tested function
-      results['title' ]       title provided in argument or name of function provided (if available)
+      results['op/sec']  calculated operations per second, formatted string
+      results['N'     ]  measured number of operations performed (fn was call)
+      results['time'  ]  measured elapsed time (sec) in performing measured number of operations
+      results['fn'    ]  stringified version of tested function
+      results['title' ]  title provided in argument or name of function provided (if available)
 
